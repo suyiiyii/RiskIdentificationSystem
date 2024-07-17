@@ -21,16 +21,6 @@ public class UserService {
         return user;
     }
 
-    public UserDto select(UserDto user) {
-        return modelMapper.map(userMapper.select(user.getUsername(), user.getPassword()), UserDto.class);
-    }
-
-
-
-
-
-
-
 
 
 

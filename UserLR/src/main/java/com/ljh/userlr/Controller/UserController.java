@@ -5,10 +5,16 @@ import com.ljh.userlr.Services.UserService;
 import com.ljh.userlr.mapper.UserMapper;
 import com.ljh.userlr.pojo.Info;
 import com.ljh.userlr.pojo.User;
+import okhttp3.OkHttpClient;
+import org.apache.catalina.connector.Request;
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+import java.util.Objects;
 
 @RestController
 public class UserController {
@@ -72,6 +78,7 @@ public class UserController {
         return info;
     }
 
+
     @PostMapping("/user/login")
     public Info Login(@RequestBody UserDto user) {
         try {
@@ -87,8 +94,13 @@ public class UserController {
                 throw new BadRequestException("用户名或密码错误", 400);
             }else{
                 // 登录成功 状态码200
-                userService.addUser(user);
-                return createInfo("登录成功", 200);
+                Info info = new Info();
+                /*String accessToken = retrieveAccessTokenFromSomewhere(); // 定义一个方法来获取access_token
+                info.setAccess_token(accessToken);*/
+                info.setToken_type("Bearer");
+                info.setStatusCode(200);
+                info.setMessage("登录成功");
+                return info;
 
             }
 
