@@ -67,6 +67,7 @@ public class UserController {
         } catch (Exception e) {
             // 处理其他异常情况，例如数据库操作失败 状态码500
             return createInfo("服务器内部错误：" + e.getMessage(), 500);
+            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
         }
     }
 
@@ -97,7 +98,7 @@ public class UserController {
                 Info info = new Info();
                 /*String accessToken = retrieveAccessTokenFromSomewhere(); // 定义一个方法来获取access_token
                 info.setAccess_token(accessToken);*/
-                info.setToken_type("Bearer");
+                /*info.setToken_type("Bearer");*/
                 info.setStatusCode(200);
                 info.setMessage("登录成功");
                 return info;

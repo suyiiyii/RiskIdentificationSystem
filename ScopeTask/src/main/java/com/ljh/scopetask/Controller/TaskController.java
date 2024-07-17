@@ -37,7 +37,7 @@ public class TaskController {
         }
     }
 
-    @PostMapping("/user/task")
+    @PostMapping("/task")
     public Info createTask(@RequestBody TaskDto task)
     {
 
@@ -46,21 +46,21 @@ public class TaskController {
 
             if (!"risk".equals(task.getScopeType())) {
                 throw new BadRequestException("参数scopeType错误", 400);
-            }
-
-            if (!"text".equals(task.getFileType()) || !"audio".equals(task.getFileType())) {
+            }else if (!"text".equals(task.getFileType()) || !"audio".equals(task.getFileType())) {
                 throw new BadRequestException("参数fileType错误", 400);
+            }else if(!"risk".equals(task.getScopeType())&& !("text".equals(task.getFileType())|| !"audio".equals(task.getFileType()))){
+                throw new BadRequestException("参数scopeType和fileType错误", 400);
+
+            }else{
+                // 创建成功 状态码200
+                TaskDto taskDto = taskService.addTask(task);
+                Info info= new Info();
+                info.setMessage("提交成功");
+                info.setTaskId(taskDto.getId());
+                info.setStatusCode(200);
+                return info;
+
             }
-
-
-            // 创建成功 状态码200
-            TaskDto taskDto = taskService.addTask(task);
-            Info info= new Info();
-            info.setMessage("提交成功");
-            info.setTaskId(taskDto.getId());
-            info.setStatusCode(200);
-            return info;
-
 
         } catch (BadRequestException e) {
             // 处理状态码为400的异常
