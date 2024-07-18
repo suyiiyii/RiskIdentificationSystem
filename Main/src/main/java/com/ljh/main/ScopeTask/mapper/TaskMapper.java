@@ -1,6 +1,7 @@
 package com.ljh.main.ScopeTask.mapper;
 
 
+import com.ljh.main.ScopeTask.pojo.Result;
 import com.ljh.main.ScopeTask.pojo.Task;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -20,6 +21,8 @@ public interface TaskMapper {
 
     @Select("select * from task")
     List<Task> getAllTasks(RowBounds rowBounds);
+
+
 
 
 }

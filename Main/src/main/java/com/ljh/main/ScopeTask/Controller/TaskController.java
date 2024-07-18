@@ -3,7 +3,9 @@ package com.ljh.main.ScopeTask.Controller;
 
 import com.ljh.main.ScopeTask.Dto.TaskDto;
 import com.ljh.main.ScopeTask.Service.TaskService;
+import com.ljh.main.ScopeTask.mapper.ResultMapper;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
+import com.ljh.main.ScopeTask.pojo.Result;
 import com.ljh.main.ScopeTask.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,13 +26,18 @@ public class TaskController {
     private final TaskService taskService;
 
     @Autowired
-    private TaskMapper taskMapper;
-
-    @Autowired
     public TaskController(TaskService taskService)
     {
         this.taskService = taskService;
     }
+
+    @Autowired
+    private TaskMapper taskMapper;
+
+    @Autowired
+    private ResultMapper resultMapper;
+
+
 
 
     @PostMapping("/task")
@@ -115,6 +122,17 @@ public class TaskController {
     @GetMapping("/task")
     List<TaskDto> allTasks(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         return taskService.getAllGrades(page, size);
+    }
+
+    @GetMapping("/result/{taskId}")
+    public ResponseEntity<?> getResult(@PathVariable String taskId) {
+        Result result = resultMapper.getResultById(taskId);
+        if (result == null) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("记录不存在");
+        }
+        //记录存在，返回所有信息
+        return ResponseEntity.ok(result);
+
     }
 
 
