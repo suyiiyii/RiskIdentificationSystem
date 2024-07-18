@@ -121,7 +121,7 @@ public class TaskController {
 
     @GetMapping("/task")
     List<TaskDto> allTasks(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
-        return taskService.getAllGrades(page, size);
+        return taskService.getAllTasks(page, size);
     }
 
     @GetMapping("/result/{taskId}")
