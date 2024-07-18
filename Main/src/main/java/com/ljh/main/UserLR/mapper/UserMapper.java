@@ -1,13 +1,16 @@
-package com.ljh.userlr.mapper;
+package com.ljh.main.UserLR.mapper;
 
-import com.ljh.userlr.pojo.User;
+
+import com.ljh.main.UserLR.pojo.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+
 @Mapper
 public interface UserMapper {
+
     @Insert("insert into tb_user (username, password) values (#{username}, #{password})")
     void addUser(User user);
 

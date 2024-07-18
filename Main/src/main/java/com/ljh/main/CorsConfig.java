@@ -1,4 +1,4 @@
-package com.ljh.userlr;
+package com.ljh.main;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

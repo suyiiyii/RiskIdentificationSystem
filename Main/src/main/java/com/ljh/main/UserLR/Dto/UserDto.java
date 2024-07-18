@@ -1,4 +1,4 @@
-package com.ljh.userlr.Dto;
+package com.ljh.main.UserLR.Dto;
 
 import lombok.Data;
 

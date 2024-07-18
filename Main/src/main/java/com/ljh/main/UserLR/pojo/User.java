@@ -1,4 +1,4 @@
-package com.ljh.userlr.pojo;
+package com.ljh.main.UserLR.pojo;
 
 import lombok.Data;
 

@@ -1,9 +1,10 @@
-package com.ljh.userlr.Controller;
+package com.ljh.main.UserLR.Controller;
 
-import com.ljh.userlr.Dto.UserDto;
-import com.ljh.userlr.Services.UserService;
-import com.ljh.userlr.mapper.UserMapper;
-import com.ljh.userlr.pojo.User;
+
+import com.ljh.main.UserLR.Dto.UserDto;
+import com.ljh.main.UserLR.Services.UserService;
+import com.ljh.main.UserLR.mapper.UserMapper;
+import com.ljh.main.UserLR.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class UserController {
 
 
     @Autowired
-    private  UserMapper userMapper;
+    private UserMapper userMapper;
 
     @Autowired
     public UserController(UserService userService) {
@@ -75,7 +76,7 @@ public class UserController {
         }else{
             // 登录成功 状态码200
             //生成token令牌
-            String access_token=UUID.randomUUID()+""+username;
+            String access_token=UUID.randomUUID()+""+"-"+username;
             //存到map(后续看能不能存到redis数据库)
             Map<String,Object> map=new HashMap<>();
             map.put("access_token",access_token);

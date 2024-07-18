@@ -1,8 +1,9 @@
-package com.ljh.userlr.Services;
+package com.ljh.main.UserLR.Services;
 
-import com.ljh.userlr.Dto.UserDto;
-import com.ljh.userlr.mapper.UserMapper;
-import com.ljh.userlr.pojo.User;
+
+import com.ljh.main.UserLR.Dto.UserDto;
+import com.ljh.main.UserLR.mapper.UserMapper;
+import com.ljh.main.UserLR.pojo.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
