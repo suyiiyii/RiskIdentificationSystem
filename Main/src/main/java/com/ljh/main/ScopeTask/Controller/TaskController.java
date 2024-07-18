@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -109,7 +110,11 @@ public class TaskController {
         //记录存在，返回所有信息
         return ResponseEntity.ok(task);
 
+    }
 
+    @GetMapping("/task")
+    List<TaskDto> allTasks(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        return taskService.getAllGrades(page, size);
     }
 
 

@@ -5,6 +5,9 @@ import com.ljh.main.ScopeTask.pojo.Task;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.session.RowBounds;
+
+import java.util.List;
 
 @Mapper
 public interface TaskMapper {
@@ -14,6 +17,9 @@ public interface TaskMapper {
 
     @Select("select * from task where taskid = #{taskId}")
     Task getTaskById(String taskId);
+
+    @Select("select * from task")
+    List<Task> getAllTasks(RowBounds rowBounds);
 
 
 }

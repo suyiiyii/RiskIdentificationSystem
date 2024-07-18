@@ -4,8 +4,11 @@ package com.ljh.main.ScopeTask.Service;
 import com.ljh.main.ScopeTask.Dto.TaskDto;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
 import com.ljh.main.ScopeTask.pojo.Task;
+import org.apache.ibatis.session.RowBounds;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -22,10 +25,22 @@ public class TaskService {
         return task;
     }
 
-    public TaskDto getTask(String taskId) {
+    /*public TaskDto getTask(String taskId) {
 
         return modelMapper.map(taskMapper.getTaskById(taskId), TaskDto.class);
+    }*/
+
+
+    public List<TaskDto> getAllGrades(int page, int size) {
+        int offset = (page - 1) * size;
+        List<Task> tasks = taskMapper.getAllTasks(new RowBounds(offset, size));
+        return tasks.stream().map(grade -> modelMapper.map(grade, TaskDto.class)).toList();
+
     }
+
+
+
+
 
 
 }
