@@ -3,7 +3,6 @@ package com.ljh.userlr.Controller;
 import com.ljh.userlr.Dto.UserDto;
 import com.ljh.userlr.Services.UserService;
 import com.ljh.userlr.mapper.UserMapper;
-import com.ljh.userlr.pojo.LoginResponse;
 import com.ljh.userlr.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,20 +54,24 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<String> Login(
+    public ResponseEntity<Map> Login(
             @RequestParam("username") String username,
             @RequestParam("password") String password) {
 
         // 检查用户名或密码是否为空 状态码400
         if (username == null || username.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名或密码为空");
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", "用户名或密码为空");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
         }
 
         // 用户名或密码错误 状态码400
         User existingUser = userMapper.select(username,password);
         if (existingUser ==null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名或密码错误");
+            Map<String, Object> map = new HashMap<>();
+            map.put("message", "用户名或密码错误");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
         }else{
             // 登录成功 状态码200
             //生成token令牌
@@ -76,7 +79,10 @@ public class UserController {
             //存到map(后续看能不能存到redis数据库)
             Map<String,Object> map=new HashMap<>();
             map.put("access_token",access_token);
-            return ResponseEntity.status(HttpStatus.OK).body("登录成功");
+            map.put("token_type","bearer");
+            map.put("message","登录成功");
+
+            return ResponseEntity.status(HttpStatus.OK).body(map);
 
 
         }
