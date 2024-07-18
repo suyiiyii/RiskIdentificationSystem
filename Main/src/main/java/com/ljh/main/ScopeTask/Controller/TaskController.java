@@ -4,6 +4,7 @@ package com.ljh.main.ScopeTask.Controller;
 import com.ljh.main.ScopeTask.Dto.TaskDto;
 import com.ljh.main.ScopeTask.Service.TaskService;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
+import com.ljh.main.ScopeTask.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +35,8 @@ public class TaskController {
     @PostMapping("/task")
     public ResponseEntity<?> createTask(
             @RequestParam("fileType") String fileType,
-            @RequestParam(value = "textContent", required = false) String textContent,
-            @RequestPart(value = "file", required = false) MultipartFile file) throws IOException {
+            @RequestParam("textContent") String textContent
+            /*@RequestPart(value = "file", required = false) MultipartFile file*/) throws IOException {
 
         try {
             if ("text".equals(fileType)) {
@@ -57,9 +58,9 @@ public class TaskController {
                 return ResponseEntity.ok(map);
 
             } else if ("audio".equals(fileType)) {
-                if (file.isEmpty()) {
+                /*if (file.isEmpty()) {
                     return ResponseEntity.badRequest().body("音频文件不能为空");
-                }
+                }*/
 
                 TaskDto taskDto = new TaskDto();
                 taskDto.setTaskId(generateTaskID());
@@ -96,6 +97,19 @@ public class TaskController {
         String taskId = "T" + timestamp + randomNumber;
 
         return taskId;
+    }
+
+
+    @GetMapping("/task/{taskId}")
+    public ResponseEntity<?> getTask(@PathVariable String taskId) {
+        Task task = taskMapper.getTaskById(taskId);
+        if (task == null) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("记录不存在");
+        }
+        //记录存在，返回所有信息
+        return ResponseEntity.ok(task);
+
+
     }
 
 

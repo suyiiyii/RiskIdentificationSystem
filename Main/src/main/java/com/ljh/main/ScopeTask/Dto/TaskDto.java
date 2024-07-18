@@ -10,4 +10,5 @@ public class TaskDto {
     private String fileType;
     private String content;
     private String status;
+    private String resultId;
 }

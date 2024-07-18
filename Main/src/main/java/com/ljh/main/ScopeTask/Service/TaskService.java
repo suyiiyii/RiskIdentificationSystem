@@ -21,4 +21,11 @@ public class TaskService {
         taskMapper.addTask(modelMapper.map(task, Task.class));
         return task;
     }
+
+    public TaskDto getTask(String taskId) {
+
+        return modelMapper.map(taskMapper.getTaskById(taskId), TaskDto.class);
+    }
+
+
 }

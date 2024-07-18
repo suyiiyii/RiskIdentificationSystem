@@ -10,4 +10,5 @@ public class Task {
     private String fileType;
     private String Content;
     private String status;
+    private String resultId;
 }

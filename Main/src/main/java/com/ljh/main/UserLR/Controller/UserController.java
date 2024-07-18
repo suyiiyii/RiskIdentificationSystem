@@ -55,24 +55,20 @@ public class UserController {
     }
 
     @PostMapping("/user/login")
-    public ResponseEntity<Map> Login(
+    public ResponseEntity<?> Login(
             @RequestParam("username") String username,
             @RequestParam("password") String password) {
 
         // 检查用户名或密码是否为空 状态码400
         if (username == null || username.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("message", "用户名或密码为空");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名或密码为空");
         }
 
         // 用户名或密码错误 状态码400
         User existingUser = userMapper.select(username,password);
         if (existingUser ==null) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("message", "用户名或密码错误");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(map);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名或密码错误");
         }else{
             // 登录成功 状态码200
             //生成token令牌
