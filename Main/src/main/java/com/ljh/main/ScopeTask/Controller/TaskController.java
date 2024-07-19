@@ -5,6 +5,7 @@ import com.ljh.main.ScopeTask.Dto.TaskDto;
 import com.ljh.main.ScopeTask.Service.TaskService;
 import com.ljh.main.ScopeTask.mapper.ResultMapper;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
+import com.ljh.main.ScopeTask.pojo.Info;
 import com.ljh.main.ScopeTask.pojo.Result;
 import com.ljh.main.ScopeTask.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,14 @@ public class TaskController {
     @Autowired
     private TaskMapper taskMapper;
 
-    @Autowired
-    private ResultMapper resultMapper;
+
 
 
 
 
     @PostMapping("/task")
     public ResponseEntity<?> createTask(
+            @RequestParam("scopeType") String scopeType,
             @RequestParam("fileType") String fileType,
             @RequestParam("textContent") String textContent
             /*@RequestPart(value = "file", required = false) MultipartFile file*/) throws IOException {
@@ -50,11 +51,14 @@ public class TaskController {
             if ("text".equals(fileType)) {
 
                 if (textContent == null || textContent.isEmpty()) {
-                    return ResponseEntity.badRequest().body("文本内容不能为空");
+                    Info info = new Info();
+                    info.setMessage("文本内容不能为空");
+                    return ResponseEntity.badRequest().body(info);
                 }
 
                 TaskDto taskDto = new TaskDto();
                 taskDto.setTaskId(generateTaskID());
+                taskDto.setScopeType(scopeType);
                 taskDto.setFileType(fileType);
                 taskDto.setContent(textContent);
                 taskDto.setStatus("排队中");
@@ -82,11 +86,16 @@ public class TaskController {
                 map.put("taskId", generateTaskID());
                 return ResponseEntity.ok(map);
             } else {
-                return ResponseEntity.badRequest().body("未知的文件类型");
+                System.out.println(fileType);
+                Info info = new Info();
+                info.setMessage("暂不支持其他文件格式");
+                return ResponseEntity.badRequest().body(info);
             }
         } catch (Exception e) {
+            Info info = new Info();
+            info.setMessage("服务器错误");
             // 其他异常处理
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("服务器错误: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(info);
         }
     }
 
@@ -112,7 +121,9 @@ public class TaskController {
     public ResponseEntity<?> getTask(@PathVariable String taskId) {
         Task task = taskMapper.getTaskById(taskId);
         if (task == null) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("记录不存在");
+            Info info = new Info();
+            info.setMessage("记录不存在");
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(info);
         }
         //记录存在，返回所有信息
         return ResponseEntity.ok(task);
@@ -124,16 +135,7 @@ public class TaskController {
         return taskService.getAllTasks(page, size);
     }
 
-    @GetMapping("/result/{taskId}")
-    public ResponseEntity<?> getResult(@PathVariable String taskId) {
-        Result result = resultMapper.getResultById(taskId);
-        if (result == null) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("记录不存在");
-        }
-        //记录存在，返回所有信息
-        return ResponseEntity.ok(result);
 
-    }
 
 
 

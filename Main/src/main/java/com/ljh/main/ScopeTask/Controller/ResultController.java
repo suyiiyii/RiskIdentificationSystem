@@ -6,6 +6,7 @@ import com.ljh.main.ScopeTask.Service.ResultService;
 import com.ljh.main.ScopeTask.Service.TaskService;
 import com.ljh.main.ScopeTask.mapper.ResultMapper;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
+import com.ljh.main.ScopeTask.pojo.Info;
 import com.ljh.main.ScopeTask.pojo.Result;
 import com.ljh.main.ScopeTask.pojo.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,11 @@ public class ResultController {
     public ResponseEntity<?> getResult(@PathVariable String taskId) {
         Result result = resultMapper.getResultById(taskId);
         if (result == null) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("记录不存在");
+            Info info = new Info();
+            info.setMessage("记录不存在");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(info);
+
+
         }
         //记录存在，返回所有信息
         return ResponseEntity.ok(result);

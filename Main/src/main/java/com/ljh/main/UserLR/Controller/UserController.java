@@ -4,6 +4,7 @@ package com.ljh.main.UserLR.Controller;
 import com.ljh.main.UserLR.Dto.UserDto;
 import com.ljh.main.UserLR.Services.UserService;
 import com.ljh.main.UserLR.mapper.UserMapper;
+import com.ljh.main.UserLR.pojo.Info;
 import com.ljh.main.UserLR.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,25 +33,31 @@ public class UserController {
 
 
     @PostMapping("/user/register")
-    public  ResponseEntity<String> Register(@RequestBody UserDto user) {
+    public  ResponseEntity<?> Register(@RequestBody UserDto user) {
 
             // 检查用户名或密码是否为空 状态码400
             if (user.getUsername() == null || user.getUsername().trim().isEmpty() ||
                     user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名或密码为空");
+                Info info = new Info();
+                info.setMessage("用户名或密码为空");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
             }
 
             // 检查用户名是否已存在 状态码400
             User existingUser = userMapper.selectByUsername(user.getUsername());
             if (existingUser != null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名重复，请使用其他用户名");
+                Info info = new Info();
+                info.setMessage("用户名重复，请使用其他用户名");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
 
             }
 
             // 注册成功 状态码200
             userService.addUser(user);
-            return ResponseEntity.status(HttpStatus.OK).body("注册成功");
-            // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+            Info info = new Info();
+            info.setMessage("注册成功");
+            return ResponseEntity.status(HttpStatus.OK).body(info);
+
 
     }
 
@@ -62,13 +69,17 @@ public class UserController {
         // 检查用户名或密码是否为空 状态码400
         if (username == null || username.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名或密码为空");
+            Info info = new Info();
+            info.setMessage("用户名或密码为空");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
         }
 
         // 用户名或密码错误 状态码400
         User existingUser = userMapper.select(username,password);
         if (existingUser ==null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("用户名或密码错误");
+            Info info = new Info();
+            info.setMessage("用户名或密码错误");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
         }else{
             // 登录成功 状态码200
             //生成token令牌
@@ -76,7 +87,7 @@ public class UserController {
             //存到map(后续看能不能存到redis数据库)
             Map<String,Object> map=new HashMap<>();
             map.put("access_token",access_token);
-            map.put("token_type","bearer");
+            map.put("token_type","Bearer");
             map.put("message","登录成功");
 
             return ResponseEntity.status(HttpStatus.OK).body(map);
