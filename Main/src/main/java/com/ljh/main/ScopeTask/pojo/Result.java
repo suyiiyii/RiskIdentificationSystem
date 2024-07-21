@@ -6,7 +6,7 @@ import lombok.Data;
 public class Result {
     private String resultId;
     private String taskId;
-    private String category[];
+    private String category;
     private String score;
     private String message;
 }

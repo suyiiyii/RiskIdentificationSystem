@@ -6,6 +6,9 @@ import com.ljh.main.ScopeTask.Service.TaskService;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
 import com.ljh.main.Info;
 import com.ljh.main.ScopeTask.pojo.Task;
+import com.ljh.main.UserLR.utils.JWTUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +34,6 @@ public class TaskController {
 
     @Autowired
     private TaskMapper taskMapper;
-
-
 
 
 
@@ -116,8 +117,9 @@ public class TaskController {
 
     //查询单个任务
     @GetMapping("/task/{taskId}")
-    public ResponseEntity<?> getTask(@PathVariable String taskId) {
-        Task task = taskMapper.getTaskById(taskId);
+    public ResponseEntity<?> getTask(@PathVariable String taskId,HttpServletRequest req, HttpServletResponse resp) {
+        String username=JWTUtils.getUsername(req,resp);
+        Task task = taskMapper.getTaskById(taskId,username);
         if (task == null) {
             Info info = new Info();
             info.setMessage("记录不存在");
@@ -131,8 +133,10 @@ public class TaskController {
     //用户查询所有任务，只能查到自己创建的所有任务，任务表中有用户名的字段以供标识。
     //用户登录后，发送查询所有任务的请求时，根据token令牌识别该用户，根据对应的用户名返回所有其创建的任务信息
     @GetMapping("/task")
-    List<TaskDto> allTasks(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
-        return taskService.getAllTasks(page, size);
+    List<TaskDto> allTasks(HttpServletRequest req, HttpServletResponse resp,@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+        String username=JWTUtils.getUsername(req,resp);
+
+        return taskService.getAllTasks(username,page, size);
     }
 
 

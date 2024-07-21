@@ -1,9 +1,15 @@
 package com.ljh.main.UserLR.utils;
 
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import com.ljh.main.Info;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +41,19 @@ public class JWTUtils {
                 .getBody();
         return claims;
     }
+
+    public static String getUsername(HttpServletRequest req, HttpServletResponse resp) {
+        String authHeader=req.getHeader("Authorization");
+
+        String jwt = authHeader.substring(7);
+
+        Claims claims=JWTUtils.parseJWT(jwt);
+
+        return claims.get("username").toString();
+
+    }
+
+
 
 
 

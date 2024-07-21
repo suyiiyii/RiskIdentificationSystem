@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface ResultMapper {
-    @Select("select * from result where taskid = #{taskId}")
-    Result getResultById(String taskId);
+
+    @Select("select * from result where resultid = #{resultId} and username=#{username}")
+    Result getResultById(String resultId,String username);
 }

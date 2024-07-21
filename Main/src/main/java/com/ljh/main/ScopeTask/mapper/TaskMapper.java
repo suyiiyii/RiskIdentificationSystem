@@ -16,11 +16,11 @@ public interface TaskMapper {
     @Insert("insert into task (taskid,scopetype, filetype,content,status) values (#{taskId},#{scopeType}, #{fileType}),#{content}#{status}")
     void addTask(Task task);
 
-    @Select("select * from task where taskid = #{taskId}")
-    Task getTaskById(String taskId);
+    @Select("select * from task where taskid = #{taskId} and username=#{username}")
+    Task getTaskById(String taskId,String username);
 
-    @Select("select * from task")
-    List<Task> getAllTasks(RowBounds rowBounds);
+    @Select("select * from task where username=#{username}")
+    List<Task> getAllTasks(String username,RowBounds rowBounds);
 
 
 

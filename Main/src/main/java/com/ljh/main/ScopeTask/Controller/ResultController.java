@@ -5,6 +5,9 @@ import com.ljh.main.ScopeTask.Service.ResultService;
 import com.ljh.main.ScopeTask.mapper.ResultMapper;
 import com.ljh.main.Info;
 import com.ljh.main.ScopeTask.pojo.Result;
+import com.ljh.main.UserLR.utils.JWTUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +28,10 @@ public class ResultController {
     private ResultMapper resultMapper;
 
 
-    @GetMapping("/result/{taskId}")
-    public ResponseEntity<?> getResult(@PathVariable String taskId) {
-        Result result = resultMapper.getResultById(taskId);
+    @GetMapping("/result/{resultId}")
+    public ResponseEntity<?> getResult(@PathVariable String resultId, HttpServletRequest req, HttpServletResponse resp) {
+        String username1 = JWTUtils.getUsername(req, resp);
+        Result result = resultMapper.getResultById(resultId,username1);
         if (result == null) {
             Info info = new Info();
             info.setMessage("记录不存在");

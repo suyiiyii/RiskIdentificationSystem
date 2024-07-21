@@ -29,6 +29,9 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         //3.获取请求头中的令牌（token）
         String authHeader=req.getHeader("Authorization");
+        if (authHeader==null){
+            return  false;
+        }
         System.out.println("请求头authHeader："+authHeader);
 
         String jwt = authHeader.substring(7); // 移除前7个字符，即"Bearer "
@@ -37,7 +40,7 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         //4.判断令牌是否存在，如果存在，放行
         if(!StringUtils.hasLength(jwt)){
-            log.info("请求头token为空，返回未登录的信息");
+            log.info("请求头authHeader为空，返回未登录的信息");
             Info info=new Info();
             info.setMessage("未登录");
             String notLogin= JSONObject.toJSONString(info);
