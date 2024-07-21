@@ -117,6 +117,7 @@ public class TaskController {
     }
 
 
+    //查询单个任务
     @GetMapping("/task/{taskId}")
     public ResponseEntity<?> getTask(@PathVariable String taskId) {
         Task task = taskMapper.getTaskById(taskId);
@@ -130,6 +131,8 @@ public class TaskController {
 
     }
 
+    //用户查询所有任务，只能查到自己创建的所有任务，任务表中有用户名的字段以供标识。
+    //用户登录后，发送查询所有任务的请求时，根据token令牌识别该用户，根据对应的用户名返回所有其创建的任务信息
     @GetMapping("/task")
     List<TaskDto> allTasks(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         return taskService.getAllTasks(page, size);

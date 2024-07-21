@@ -6,6 +6,7 @@ import com.ljh.main.UserLR.Services.UserService;
 import com.ljh.main.UserLR.mapper.UserMapper;
 import com.ljh.main.UserLR.pojo.Info;
 import com.ljh.main.UserLR.pojo.User;
+import com.ljh.main.UserLR.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,18 @@ public class UserController {
 
     }
 
+
+    /*
+    * 登录认证：
+    * 使用JWT
+    * 1.登录成功后生成token令牌，并返回给客户端，前端拿到令牌后会存储起来
+    * 2.在后续的请求中，都会将JWT令牌携带到服务端，
+        服务端要进行统一拦截，先校验有没有把令牌携带过来，
+        如果没带过来则拒绝访问，如果带过来还要校验一下这个令牌是否有效
+        有效则放行去进行请求的处理*/
+
+
+
     @PostMapping("/user/login")
     public ResponseEntity<?> Login(
             @RequestParam("username") String username,
@@ -82,16 +95,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
         }else{
             // 登录成功 状态码200
-            //生成token令牌
-            String access_token=UUID.randomUUID()+""+"-"+username;
-            //存到map(后续看能不能存到redis数据库)
-            Map<String,Object> map=new HashMap<>();
-            map.put("access_token",access_token);
+
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("username", username);
+            String jwt=JWTUtils.generateJWT(claims);
+            Map<String, Object> map = new HashMap<>();
+            map.put("access_token",jwt);
             map.put("token_type","Bearer");
             map.put("message","登录成功");
 
             return ResponseEntity.status(HttpStatus.OK).body(map);
-
 
         }
 
