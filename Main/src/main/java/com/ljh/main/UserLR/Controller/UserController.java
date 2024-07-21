@@ -103,6 +103,7 @@ public class UserController {
             map.put("access_token",jwt);
             map.put("token_type","Bearer");
             map.put("message","登录成功");
+            System.out.println("jwt:"+jwt);
 
             return ResponseEntity.status(HttpStatus.OK).body(map);
 

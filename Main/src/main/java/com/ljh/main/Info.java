@@ -1,4 +1,4 @@
-package com.ljh.main.ScopeTask.pojo;
+package com.ljh.main;
 
 import lombok.Data;
 
