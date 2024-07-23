@@ -11,4 +11,5 @@ public class Task {
     private String Content;
     private String status;
     private String resultId;
+    private String username;
 }

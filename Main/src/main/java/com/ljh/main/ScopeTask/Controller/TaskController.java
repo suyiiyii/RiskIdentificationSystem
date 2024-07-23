@@ -13,8 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -23,6 +30,7 @@ import java.util.Map;
 import java.util.Random;
 
 @RestController
+@RequestMapping("/")
 public class TaskController {
     private final TaskService taskService;
 
@@ -38,15 +46,16 @@ public class TaskController {
 
 
 
-    @PostMapping("/task")
-    public ResponseEntity<?> createTask(
+    @PostMapping("/task_text")
+    public ResponseEntity<?> createTextTask(
             @RequestParam("scopeType") String scopeType,
             @RequestParam("fileType") String fileType,
-            @RequestParam("textContent") String textContent
-            /*@RequestPart(value = "file", required = false) MultipartFile file*/) throws IOException {
+            @RequestParam("textContent") String textContent,HttpServletRequest req, HttpServletResponse resp)  {
+        System.out.println("进来了1");
 
         try {
             if ("text".equals(fileType)) {
+
 
                 if (textContent == null || textContent.isEmpty()) {
                     Info info = new Info();
@@ -60,29 +69,20 @@ public class TaskController {
                 taskDto.setFileType(fileType);
                 taskDto.setContent(textContent);
                 taskDto.setStatus("排队中");
+                //taskDto.setResultId(generateResultID());
+                String username = JWTUtils.getUsername(req, resp);
+                taskDto.setUsername(username);
+
+                System.out.println(taskDto);
+
                 taskService.addTask(taskDto);
+                //System.out.println("任务提交成功");
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("message", "提交成功");
-                map.put("taskId", generateTaskID());
+                map.put("taskId", taskDto.getTaskId());
                 return ResponseEntity.ok(map);
 
-            } else if ("audio".equals(fileType)) {
-                /*if (file.isEmpty()) {
-                    return ResponseEntity.badRequest().body("音频文件不能为空");
-                }*/
-
-                TaskDto taskDto = new TaskDto();
-                taskDto.setTaskId(generateTaskID());
-                taskDto.setFileType(fileType);
-                //音频转文本后，再把文本传入数据库
-                taskDto.setStatus("排队中");
-                taskService.addTask(taskDto);
-
-                Map<String, Object> map = new HashMap<>();
-                map.put("message", "提交成功");
-                map.put("taskId", generateTaskID());
-                return ResponseEntity.ok(map);
             } else {
                 System.out.println(fileType);
                 Info info = new Info();
@@ -94,6 +94,83 @@ public class TaskController {
             info.setMessage("服务器错误");
             // 其他异常处理
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(info);
+        }
+    }
+
+
+    @PostMapping("/task_audio")
+    public ResponseEntity<?> createAudioTask(
+            @RequestParam("scopeType") String scopeType,
+            @RequestParam("fileType") String fileType,
+            @RequestParam("fileContent") MultipartFile file , HttpServletRequest req, HttpServletResponse resp)  {
+        System.out.println("进来了2");
+
+        try {
+
+            if ("audio".equals(fileType)) {
+                if (file.isEmpty()) {
+                    return ResponseEntity.badRequest().body("音频文件不能为空");
+                }
+
+
+
+                TaskDto taskDto = new TaskDto();
+                taskDto.setTaskId(generateTaskID());
+                taskDto.setScopeType(scopeType);
+                taskDto.setFileType(fileType);
+                taskDto.setContent("audio文件");
+                taskDto.setStatus("排队中");
+                //taskDto.setResultId(generateResultID());
+                String username = JWTUtils.getUsername(req, resp);
+                taskDto.setUsername(username);
+
+
+                taskService.addTask(taskDto);
+                System.out.println("加进了");
+
+
+                Map<String, Object> map = new HashMap<>();
+                map.put("message", "提交成功");
+                map.put("taskId", generateTaskID());
+                saveFileToLocal(file);
+                return ResponseEntity.ok(map);
+            }
+
+             else {
+                System.out.println(fileType);
+                Info info = new Info();
+                info.setMessage("暂不支持其他文件格式");
+                return ResponseEntity.badRequest().body(info);
+            }
+        } catch (Exception e) {
+            Info info = new Info();
+            info.setMessage("服务器错误");
+            // 其他异常处理
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(info);
+        }
+    }
+
+    public void saveFileToLocal(MultipartFile file) {
+        String targetDir = "C:\\code";
+        Path path = Paths.get(targetDir);
+
+        // Create directory if it does not exist
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectories(path);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to create directory: " + targetDir, e);
+            }
+        }
+
+        // Build the full path for the file
+        Path fullPath = path.resolve(file.getOriginalFilename());
+
+        try {
+            // Write the file content to the specified path
+            file.transferTo(fullPath.toFile());
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to save file to local", e);
         }
     }
 
@@ -114,6 +191,23 @@ public class TaskController {
         return taskId;
     }
 
+    public static String generateResultID() {
+        // 获取当前时间的时间戳
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String timestamp = now.format(formatter);
+
+        // 生成一个0-9999之间的随机数，不足4位前面补0
+        Random random = new Random();
+        int randomNum = random.nextInt(10000);
+        String randomNumber = String.format("%04d", randomNum);
+
+        // 拼接前缀、时间戳和随机数
+        String resultId = "R" + timestamp + randomNumber;
+
+        return resultId;
+    }
+
 
     //查询单个任务
     @GetMapping("/task/{taskId}")
@@ -123,7 +217,7 @@ public class TaskController {
         if (task == null) {
             Info info = new Info();
             info.setMessage("记录不存在");
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(info);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(info);
         }
         //记录存在，返回所有信息
         return ResponseEntity.ok(task);
@@ -133,7 +227,7 @@ public class TaskController {
     //用户查询所有任务，只能查到自己创建的所有任务，任务表中有用户名的字段以供标识。
     //用户登录后，发送查询所有任务的请求时，根据token令牌识别该用户，根据对应的用户名返回所有其创建的任务信息
     @GetMapping("/task")
-    List<TaskDto> allTasks(HttpServletRequest req, HttpServletResponse resp,@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
+    List<TaskDto> allTasks(HttpServletRequest req, HttpServletResponse resp, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int size) {
         String username=JWTUtils.getUsername(req,resp);
 
         return taskService.getAllTasks(username,page, size);
@@ -145,3 +239,5 @@ public class TaskController {
 
 
 }
+
+

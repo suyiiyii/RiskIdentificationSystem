@@ -31,7 +31,7 @@ public class TaskService {
     }*/
 
 
-    public List<TaskDto> getAllTasks(String username,int page, int size) {
+    public List<TaskDto> getAllTasks(String username, int page, int size) {
         int offset = (page - 1) * size;
         List<Task> tasks = taskMapper.getAllTasks(username,new RowBounds(offset, size));
         return tasks.stream().map(grade -> modelMapper.map(grade, TaskDto.class)).toList();

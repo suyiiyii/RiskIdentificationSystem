@@ -8,7 +8,8 @@ public class TaskDto {
     private String taskId;
     private String scopeType;
     private String fileType;
-    private String content;
+    private String Content;
     private String status;
     private String resultId;
+    private String username;
 }
