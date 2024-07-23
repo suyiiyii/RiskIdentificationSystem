@@ -1,11 +1,11 @@
 package com.ljh.main.ScopeTask.Controller;
 
 
-import com.ljh.main.ScopeTask.Service.ResultService;
+import com.ljh.main.ScopeTask.Service.GetResultByIdService;
 import com.ljh.main.ScopeTask.mapper.ResultMapper;
 import com.ljh.main.Info;
 import com.ljh.main.ScopeTask.pojo.Result;
-import com.ljh.main.UserLR.utils.JWTUtils;
+import com.ljh.main.utils.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,33 +14,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class ResultController {
-    private final ResultService resultService;
+public class GetResultByIdController {
+    private final GetResultByIdService resultService;
 
     @Autowired
-    public ResultController(ResultService resultService)
+    public GetResultByIdController(GetResultByIdService resultService)
     {
         this.resultService = resultService;
     }
 
 
-    @Autowired
-    private ResultMapper resultMapper;
-
 
     @GetMapping("/result/{resultId}")
     public ResponseEntity<?> getResult(@PathVariable String resultId, HttpServletRequest req, HttpServletResponse resp) {
-        String username1 = JWTUtils.getUsername(req, resp);
-        Result result = resultMapper.getResultById(resultId,username1);
-        if (result == null) {
-            Info info = new Info();
-            info.setMessage("记录不存在");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(info);
-
-
-        }
-        //记录存在，返回所有信息
-        return ResponseEntity.ok(result);
+       return resultService.getResult(resultId,req,resp);
 
     }
 

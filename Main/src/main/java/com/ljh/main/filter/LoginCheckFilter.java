@@ -2,7 +2,7 @@ package com.ljh.main.filter;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ljh.main.Info;
-import com.ljh.main.UserLR.utils.JWTUtils;
+import com.ljh.main.utils.JWTUtils;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

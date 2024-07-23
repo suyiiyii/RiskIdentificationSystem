@@ -3,7 +3,7 @@ package com.ljh.main.interceptor;
 import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.ljh.main.Info;
-import com.ljh.main.UserLR.utils.JWTUtils;
+import com.ljh.main.utils.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
