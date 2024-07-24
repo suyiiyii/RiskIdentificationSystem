@@ -4,11 +4,10 @@ package com.ljh.main.UserLR.Controller;
 import com.ljh.main.UserLR.Services.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@ResponseBody
 public class LoginController {
     private final LoginService loginService;
 

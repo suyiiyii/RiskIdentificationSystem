@@ -20,7 +20,6 @@ public class RegisterController {
         this.registerService = registerService;
     }
 
-
     @PostMapping("/user/register")
     public ResponseEntity<?> Register(@RequestBody UserDto user) {
         return registerService.registerUser(user);

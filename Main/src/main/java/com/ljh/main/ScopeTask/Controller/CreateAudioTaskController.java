@@ -5,6 +5,7 @@ import com.ljh.main.Info;
 import com.ljh.main.ScopeTask.Dto.TaskDto;
 import com.ljh.main.ScopeTask.Service.CreateAudioTaskService;
 import com.ljh.main.ScopeTask.pojo.Task;
+import com.ljh.main.anno.Log;
 import com.ljh.main.utils.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,6 +38,7 @@ public class CreateAudioTaskController {
     }
     
 
+    @Log
     @PostMapping("/task_audio")
     public ResponseEntity<?> createAudioTask(
             @RequestParam("scopeType") String scopeType,

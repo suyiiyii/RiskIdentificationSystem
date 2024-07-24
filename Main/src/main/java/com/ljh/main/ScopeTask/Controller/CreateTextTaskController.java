@@ -2,6 +2,7 @@ package com.ljh.main.ScopeTask.Controller;
 
 
 import com.ljh.main.ScopeTask.Service.CreateTextTaskService;
+import com.ljh.main.anno.Log;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ public class CreateTextTaskController {
 
 
 
+    @Log
     @PostMapping("/task_text")
     public ResponseEntity<?> createTextTask(
             @RequestParam("scopeType") String scopeType,
