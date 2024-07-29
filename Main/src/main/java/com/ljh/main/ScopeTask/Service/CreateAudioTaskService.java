@@ -1,6 +1,7 @@
 package com.ljh.main.ScopeTask.Service;
 
 
+import com.google.gson.Gson;
 import com.ljh.main.Info;
 import com.ljh.main.ScopeTask.Dto.TaskDto;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
@@ -10,6 +11,7 @@ import com.ljh.main.utils.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,9 @@ public class CreateAudioTaskService {
         this.taskMapper = taskMapper;
     }
 
+    @Autowired
+    private Gson gson;
+
 
     public TaskDto addTask(TaskDto task) {
         taskMapper.addTask(modelMapper.map(task, Task.class));
@@ -46,7 +51,8 @@ public class CreateAudioTaskService {
 
             if ("audio".equals(fileType)) {
                 if (file.isEmpty()) {
-                    return ResponseEntity.badRequest().body("音频文件不能为空");
+                    String json = gson.toJson("音频文件不能为空");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
                 }
 
 

@@ -1,11 +1,13 @@
 package com.ljh.main.UserLR.Services;
 
 
+import com.google.gson.Gson;
 import com.ljh.main.UserLR.mapper.UserMapper;
 import com.ljh.main.UserLR.pojo.Info;
 import com.ljh.main.UserLR.pojo.User;
 import com.ljh.main.utils.JWTUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ public class LoginService {
     private final UserMapper userMapper;
     private final ModelMapper modelMapper = new ModelMapper();
 
+    @Autowired
+    private Gson gson;
 
     public LoginService(UserMapper userMapper) {
         this.userMapper = userMapper;
@@ -36,17 +40,22 @@ public class LoginService {
         // 检查用户名或密码是否为空 状态码400
         if (username == null || username.trim().isEmpty() ||
                 password == null || password.trim().isEmpty()) {
-            Info info = new Info();
+            /*Info info = new Info();
             info.setMessage("用户名或密码为空");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);*/
+            String json = gson.toJson("用户名或密码为空");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
         }
 
         // 用户名或密码错误 状态码400
         User existingUser = userMapper.select(username,password);
         if (existingUser ==null) {
-            Info info = new Info();
+            /*Info info = new Info();
             info.setMessage("用户名或密码错误");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(info);*/
+            String json = gson.toJson("用户名或密码错误");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+
         }else{
             // 登录成功 状态码200
 

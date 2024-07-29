@@ -1,6 +1,7 @@
 package com.ljh.main.ScopeTask.Service;
 
 
+import com.google.gson.Gson;
 import com.ljh.main.Info;
 import com.ljh.main.ScopeTask.Dto.TaskDto;
 import com.ljh.main.ScopeTask.mapper.TaskMapper;
@@ -10,6 +11,7 @@ import com.ljh.main.utils.JWTUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class CreateTextTaskService {
         this.taskMapper = taskMapper;
     }
 
+    @Autowired
+    private Gson gson;
+
 
     public TaskDto addTask(TaskDto task) {
         taskMapper.addTask(modelMapper.map(task, Task.class));
@@ -45,9 +50,12 @@ public class CreateTextTaskService {
 
 
                 if (textContent == null || textContent.isEmpty()) {
-                    Info info = new Info();
+                    /*Info info = new Info();
                     info.setMessage("文本内容不能为空");
-                    return ResponseEntity.badRequest().body(info);
+                    return ResponseEntity.badRequest().body(info);*/
+                    String json = gson.toJson("文本内容不能为空");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(json);
+
                 }
 
                 TaskDto taskDto = new TaskDto();
